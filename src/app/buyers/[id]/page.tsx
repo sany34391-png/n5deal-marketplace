@@ -97,7 +97,7 @@ export default async function BuyerPage({
           </p>
 
           <Link
-            href={`/messages?buyer=${user.id}`}
+            href={`/messages?user=${user.id}`}
             className="buyer-page__button"
           >
             Contact buyer

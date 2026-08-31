@@ -78,7 +78,7 @@ export default async function AssetPage({
           <p>Verified marketplace participant</p>
 
           <Link
-            href={`/messages?asset=${asset.id}&seller=${seller.id}`}
+            href={`/messages?user=${seller.id}&asset=${asset.id}`}
             className="asset-page__contact"
           >
             Contact seller

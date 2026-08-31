@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import type { BuyerProfile, User } from "@/types/marketplace";
 
@@ -6,7 +7,10 @@ interface BuyerCardProps {
   profile: BuyerProfile;
 }
 
-export function BuyerCard({ user, profile }: BuyerCardProps) {
+export function BuyerCard({
+  user,
+  profile,
+}: BuyerCardProps) {
   return (
     <article className="buyer-card">
       <div className="buyer-card__top">
@@ -42,12 +46,22 @@ export function BuyerCard({ user, profile }: BuyerCardProps) {
         </div>
       </div>
 
-      <Link
-        href={`/buyers/${user.id}`}
-        className="buyer-card__button"
-      >
-        View buyer
-      </Link>
+      <div className="buyer-card__actions">
+        <Link
+          href={`/buyers/${user.id}`}
+          className="buyer-card__button"
+        >
+          View buyer
+        </Link>
+
+        <Link
+          href={`/messages?user=${user.id}`}
+          className="buyer-card__button buyer-card__button--secondary"
+        >
+          Contact buyer
+        </Link>
+      </div>
     </article>
   );
 }
+

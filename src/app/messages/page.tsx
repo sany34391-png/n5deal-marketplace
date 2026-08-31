@@ -1,18 +1,33 @@
+
 "use client";
 
 import { useState } from "react";
-import { messages as initialMessages, users } from "@/data/mock-data";
+import { useSearchParams } from "next/navigation";
+import {
+  messages as initialMessages,
+  users,
+} from "@/data/mock-data";
 import type { Message } from "@/types/marketplace";
 
 const CURRENT_USER_ID = "user-1";
 
 export default function MessagesPage() {
+  const searchParams = useSearchParams();
+
+  const selectedUserId =
+    searchParams.get("user") || "user-3";
+
+  const selectedUser = users.find(
+    (user) => user.id === selectedUserId
+  );
+
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") {
       return initialMessages;
     }
 
-    const savedMessages = localStorage.getItem("n5deal-messages");
+    const savedMessages =
+      localStorage.getItem("n5deal-messages");
 
     return savedMessages
       ? JSON.parse(savedMessages)
@@ -29,8 +44,10 @@ export default function MessagesPage() {
 
   const currentConversationMessages = messages.filter(
     (item) =>
-      item.senderId === CURRENT_USER_ID ||
-      item.receiverId === CURRENT_USER_ID
+      (item.senderId === CURRENT_USER_ID &&
+        item.receiverId === selectedUserId) ||
+      (item.senderId === selectedUserId &&
+        item.receiverId === CURRENT_USER_ID)
   );
 
   const handleSend = () => {
@@ -41,12 +58,15 @@ export default function MessagesPage() {
     const newMessage: Message = {
       id: `message-${Date.now()}`,
       senderId: CURRENT_USER_ID,
-      receiverId: "user-3",
+      receiverId: selectedUserId,
       content: text,
       createdAt: new Date().toISOString(),
     };
 
-    const updatedMessages = [...messages, newMessage];
+    const updatedMessages = [
+      ...messages,
+      newMessage,
+    ];
 
     setMessages(updatedMessages);
 
@@ -75,8 +95,9 @@ export default function MessagesPage() {
           <h2>Conversations</h2>
 
           {conversations.map((user) => (
-            <div
+            <a
               key={user.id}
+              href={`/messages?user=${user.id}`}
               className="messages-page__conversation"
             >
               <strong>{user.name}</strong>
@@ -86,34 +107,41 @@ export default function MessagesPage() {
                   ? "Buyer"
                   : "Seller"}
               </span>
-            </div>
+            </a>
           ))}
         </div>
 
         <div className="messages-page__chat">
           <div className="messages-page__chat-header">
-            <strong>Conversation</strong>
+            <strong>
+              {selectedUser?.name || "Conversation"}
+            </strong>
 
             <span>
-              Messages with marketplace participants
+              {selectedUser?.role === "buyer"
+                ? "Buyer"
+                : "Seller"}
             </span>
           </div>
 
           <div className="messages-page__messages">
-            {currentConversationMessages.map((item) => (
-              <div
-                key={item.id}
-                className={`message ${
-                  item.senderId === CURRENT_USER_ID
-                    ? "message--sent"
-                    : "message--received"
-                }`}
-              >
-                {item.content}
-              </div>
-            ))}
+            {currentConversationMessages.map(
+              (item) => (
+                <div
+                  key={item.id}
+                  className={`message ${
+                    item.senderId === CURRENT_USER_ID
+                      ? "message--sent"
+                      : "message--received"
+                  }`}
+                >
+                  {item.content}
+                </div>
+              )
+            )}
 
-            {currentConversationMessages.length === 0 && (
+            {currentConversationMessages.length ===
+              0 && (
               <p>No messages yet.</p>
             )}
           </div>
@@ -132,7 +160,10 @@ export default function MessagesPage() {
               }}
             />
 
-            <button onClick={handleSend}>
+            <button
+              type="button"
+              onClick={handleSend}
+            >
               Send
             </button>
           </div>
@@ -141,3 +172,4 @@ export default function MessagesPage() {
     </main>
   );
 }
+
