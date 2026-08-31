@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   messages as initialMessages,
@@ -26,12 +27,16 @@ export default function MessagesPage() {
       return initialMessages;
     }
 
-    const savedMessages =
-      localStorage.getItem("n5deal-messages");
+    try {
+      const savedMessages =
+        localStorage.getItem("n5deal-messages");
 
-    return savedMessages
-      ? JSON.parse(savedMessages)
-      : initialMessages;
+      return savedMessages
+        ? JSON.parse(savedMessages)
+        : initialMessages;
+    } catch {
+      return initialMessages;
+    }
   });
 
   const [message, setMessage] = useState("");
@@ -53,12 +58,14 @@ export default function MessagesPage() {
   const handleSend = () => {
     const text = message.trim();
 
-    if (!text) return;
+    if (!text || !selectedUser) {
+      return;
+    }
 
     const newMessage: Message = {
       id: `message-${Date.now()}`,
       senderId: CURRENT_USER_ID,
-      receiverId: selectedUserId,
+      receiverId: selectedUser.id,
       content: text,
       createdAt: new Date().toISOString(),
     };
@@ -95,7 +102,7 @@ export default function MessagesPage() {
           <h2>Conversations</h2>
 
           {conversations.map((user) => (
-            <a
+            <Link
               key={user.id}
               href={`/messages?user=${user.id}`}
               className="messages-page__conversation"
@@ -107,7 +114,7 @@ export default function MessagesPage() {
                   ? "Buyer"
                   : "Seller"}
               </span>
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -125,23 +132,29 @@ export default function MessagesPage() {
           </div>
 
           <div className="messages-page__messages">
-            {currentConversationMessages.map(
-              (item) => (
-                <div
-                  key={item.id}
-                  className={`message ${
-                    item.senderId === CURRENT_USER_ID
-                      ? "message--sent"
-                      : "message--received"
-                  }`}
-                >
-                  {item.content}
-                </div>
-              )
-            )}
+            {currentConversationMessages.map((item) => (
+              <div
+                key={item.id}
+                className={`message ${
+                  item.senderId === CURRENT_USER_ID
+                    ? "message--sent"
+                    : "message--received"
+                }`}
+              >
+                <span>{item.content}</span>
 
-            {currentConversationMessages.length ===
-              0 && (
+                <small>
+                  {new Date(
+                    item.createdAt
+                  ).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </small>
+              </div>
+            ))}
+
+            {currentConversationMessages.length === 0 && (
               <p>No messages yet.</p>
             )}
           </div>
@@ -153,6 +166,7 @@ export default function MessagesPage() {
                 setMessage(event.target.value)
               }
               placeholder="Write a message..."
+              maxLength={1000}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   handleSend();
@@ -163,6 +177,7 @@ export default function MessagesPage() {
             <button
               type="button"
               onClick={handleSend}
+              disabled={!message.trim()}
             >
               Send
             </button>
@@ -172,4 +187,3 @@ export default function MessagesPage() {
     </main>
   );
 }
-
