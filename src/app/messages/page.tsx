@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -13,9 +14,8 @@ import type {
 } from "@/types/marketplace";
 import { getCurrentUser } from "@/lib/auth";
 
-export default function MessagesPage() {
+function MessagesContent() {
   const searchParams = useSearchParams();
-
   const currentUser = getCurrentUser();
 
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -56,14 +56,13 @@ export default function MessagesPage() {
       user.role !== "manager"
   );
 
-  const currentConversationMessages =
-    messages.filter(
-      (item) =>
-        (item.senderId === currentUser.id &&
-          item.receiverId === selectedUserId) ||
-        (item.senderId === selectedUserId &&
-          item.receiverId === currentUser.id)
-    );
+  const currentConversationMessages = messages.filter(
+    (item) =>
+      (item.senderId === currentUser.id &&
+        item.receiverId === selectedUserId) ||
+      (item.senderId === selectedUserId &&
+        item.receiverId === currentUser.id)
+  );
 
   const handleSend = () => {
     const text = message.trim();
@@ -197,5 +196,13 @@ export default function MessagesPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={null}>
+      <MessagesContent />
+    </Suspense>
   );
 }
