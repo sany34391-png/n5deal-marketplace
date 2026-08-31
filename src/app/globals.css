@@ -87,3 +87,113 @@
   margin: 0 0 20px;
   color: #7b818d;
 }
+.asset-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+.asset-page__back {
+  display: inline-block;
+  margin-bottom: 40px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.asset-page__back:hover {
+  color: #111827;
+}
+
+.asset-page__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.asset-page__industry {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.asset-page__header h1 {
+  margin: 12px 0;
+  font-size: 44px;
+  letter-spacing: -1px;
+}
+
+.asset-page__header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.asset-page__price {
+  min-width: 220px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.asset-page__price span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.asset-page__price strong {
+  font-size: 28px;
+}
+
+.asset-page__content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.asset-page__description,
+.asset-page__seller {
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.asset-page__description h2,
+.asset-page__seller h2 {
+  margin-top: 0;
+}
+
+.asset-page__description p {
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.asset-page__seller > span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 1px;
+}
+
+.asset-page__seller p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.asset-page__contact {
+  display: block;
+  margin-top: 24px;
+  padding: 13px 18px;
+  border-radius: 8px;
+  background: #111827;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 600;
+}
