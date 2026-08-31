@@ -12,16 +12,13 @@ export default function DashboardGuard({
   children,
 }: DashboardGuardProps) {
   const router = useRouter();
+  const user = getCurrentUser();
 
   useEffect(() => {
-    const user = getCurrentUser();
-
     if (!isSeller(user)) {
       router.replace("/marketplace");
     }
-  }, [router]);
-
-  const user = getCurrentUser();
+  }, [router, user]);
 
   if (!isSeller(user)) {
     return null;
