@@ -1,10 +1,10 @@
-
 "use client";
 
 import { FormEvent, useState } from "react";
 import { assets as initialAssets } from "@/data/mock-data";
 import type { Asset } from "@/types/marketplace";
 import { getCurrentUser } from "@/lib/auth";
+import LogoutButton from "@/components/auth/LogoutButton";
 import {
   assetSchema,
   type AssetFormData,
@@ -128,6 +128,8 @@ export default function DashboardContent() {
           Publish and manage your assets on the N5Deal
           marketplace.
         </p>
+
+        <LogoutButton />
       </section>
 
       <section className="dashboard-page__content">
@@ -320,7 +322,7 @@ export default function DashboardContent() {
                 <p>{asset.location}</p>
 
                 <strong>
-                  ${asset.price.toLocaleString()}
+                  ${asset.price.toLocaleString("en-US")}
                 </strong>
               </article>
             ))
