@@ -1,14 +1,59 @@
 "use client";
 
 import { useState } from "react";
+import { messages as initialMessages, users } from "@/data/mock-data";
+import type { Message } from "@/types/marketplace";
+
+const CURRENT_USER_ID = "user-1";
 
 export default function MessagesPage() {
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") {
+      return initialMessages;
+    }
+
+    const savedMessages = localStorage.getItem("n5deal-messages");
+
+    return savedMessages
+      ? JSON.parse(savedMessages)
+      : initialMessages;
+  });
+
   const [message, setMessage] = useState("");
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+  const conversations = users.filter(
+    (user) =>
+      user.id !== CURRENT_USER_ID &&
+      user.role !== "manager"
+  );
 
-    alert("Message sent!");
+  const currentConversationMessages = messages.filter(
+    (item) =>
+      item.senderId === CURRENT_USER_ID ||
+      item.receiverId === CURRENT_USER_ID
+  );
+
+  const handleSend = () => {
+    const text = message.trim();
+
+    if (!text) return;
+
+    const newMessage: Message = {
+      id: `message-${Date.now()}`,
+      senderId: CURRENT_USER_ID,
+      receiverId: "user-3",
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedMessages = [...messages, newMessage];
+
+    setMessages(updatedMessages);
+
+    localStorage.setItem(
+      "n5deal-messages",
+      JSON.stringify(updatedMessages)
+    );
 
     setMessage("");
   };
@@ -29,31 +74,48 @@ export default function MessagesPage() {
         <div className="messages-page__conversations">
           <h2>Conversations</h2>
 
-          <div className="messages-page__conversation">
-            <strong>Demo Buyer</strong>
-            <span>Interested in your asset</span>
-          </div>
+          {conversations.map((user) => (
+            <div
+              key={user.id}
+              className="messages-page__conversation"
+            >
+              <strong>{user.name}</strong>
 
-          <div className="messages-page__conversation">
-            <strong>Demo Seller</strong>
-            <span>New acquisition opportunity</span>
-          </div>
+              <span>
+                {user.role === "buyer"
+                  ? "Buyer"
+                  : "Seller"}
+              </span>
+            </div>
+          ))}
         </div>
 
         <div className="messages-page__chat">
           <div className="messages-page__chat-header">
-            <strong>Demo Buyer</strong>
-            <span>Active conversation</span>
+            <strong>Conversation</strong>
+
+            <span>
+              Messages with marketplace participants
+            </span>
           </div>
 
           <div className="messages-page__messages">
-            <div className="message message--received">
-              Hello, I am interested in this opportunity.
-            </div>
+            {currentConversationMessages.map((item) => (
+              <div
+                key={item.id}
+                className={`message ${
+                  item.senderId === CURRENT_USER_ID
+                    ? "message--sent"
+                    : "message--received"
+                }`}
+              >
+                {item.content}
+              </div>
+            ))}
 
-            <div className="message message--sent">
-              Thank you for your interest.
-            </div>
+            {currentConversationMessages.length === 0 && (
+              <p>No messages yet.</p>
+            )}
           </div>
 
           <div className="messages-page__form">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useState } from "react";
@@ -50,7 +51,7 @@ export function BuyersMarketplace() {
 
       return matchesSearch && matchesIndustry;
     });
-  }, [search, industry]);
+  }, [buyers, search, industry]);
 
   return (
     <div className="buyers-marketplace">
@@ -59,12 +60,16 @@ export function BuyersMarketplace() {
           type="search"
           placeholder="Search buyers..."
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) =>
+            setSearch(event.target.value)
+          }
         />
 
         <select
           value={industry}
-          onChange={(event) => setIndustry(event.target.value)}
+          onChange={(event) =>
+            setIndustry(event.target.value)
+          }
         >
           <option value="all">All industries</option>
 
