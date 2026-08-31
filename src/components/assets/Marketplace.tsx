@@ -1,32 +1,65 @@
+
 "use client";
 
 import { useMemo, useState } from "react";
-import { assets } from "@/data/mock-data";
+import { assets as initialAssets } from "@/data/mock-data";
 import { AssetCard } from "./AssetCard";
+import type { Asset } from "@/types/marketplace";
 
 export function Marketplace() {
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("all");
   const [location, setLocation] = useState("all");
 
-  const industries = [...new Set(assets.map((asset) => asset.industry))];
-  const locations = [...new Set(assets.map((asset) => asset.location))];
+  const [assets] = useState<Asset[]>(() => {
+    if (typeof window === "undefined") {
+      return initialAssets;
+    }
+
+    try {
+      const savedAssets = localStorage.getItem("n5deal-assets");
+
+      if (savedAssets) {
+        return JSON.parse(savedAssets) as Asset[];
+      }
+    } catch {
+      return initialAssets;
+    }
+
+    return initialAssets;
+  });
+
+  const industries = [
+    ...new Set(assets.map((asset) => asset.industry)),
+  ];
+
+  const locations = [
+    ...new Set(assets.map((asset) => asset.location)),
+  ];
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
+      const searchValue = search.toLowerCase();
+
       const matchesSearch =
-        asset.title.toLowerCase().includes(search.toLowerCase()) ||
-        asset.description.toLowerCase().includes(search.toLowerCase());
+        asset.title.toLowerCase().includes(searchValue) ||
+        asset.description.toLowerCase().includes(searchValue);
 
       const matchesIndustry =
-        industry === "all" || asset.industry === industry;
+        industry === "all" ||
+        asset.industry === industry;
 
       const matchesLocation =
-        location === "all" || asset.location === location;
+        location === "all" ||
+        asset.location === location;
 
-      return matchesSearch && matchesIndustry && matchesLocation;
+      return (
+        matchesSearch &&
+        matchesIndustry &&
+        matchesLocation
+      );
     });
-  }, [search, industry, location]);
+  }, [assets, search, industry, location]);
 
   const resetFilters = () => {
     setSearch("");
@@ -41,14 +74,20 @@ export function Marketplace() {
           type="search"
           placeholder="Search opportunities..."
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) =>
+            setSearch(event.target.value)
+          }
         />
 
         <select
           value={industry}
-          onChange={(event) => setIndustry(event.target.value)}
+          onChange={(event) =>
+            setIndustry(event.target.value)
+          }
         >
-          <option value="all">All industries</option>
+          <option value="all">
+            All industries
+          </option>
 
           {industries.map((item) => (
             <option key={item} value={item}>
@@ -59,9 +98,13 @@ export function Marketplace() {
 
         <select
           value={location}
-          onChange={(event) => setLocation(event.target.value)}
+          onChange={(event) =>
+            setLocation(event.target.value)
+          }
         >
-          <option value="all">All locations</option>
+          <option value="all">
+            All locations
+          </option>
 
           {locations.map((item) => (
             <option key={item} value={item}>
@@ -70,29 +113,43 @@ export function Marketplace() {
           ))}
         </select>
 
-        <button type="button" onClick={resetFilters}>
+        <button
+          type="button"
+          onClick={resetFilters}
+        >
           Reset
         </button>
       </div>
 
       <div className="marketplace__result">
         <strong>{filteredAssets.length}</strong>{" "}
-        {filteredAssets.length === 1 ? "opportunity" : "opportunities"}
+        {filteredAssets.length === 1
+          ? "opportunity"
+          : "opportunities"}
       </div>
 
       {filteredAssets.length === 0 ? (
         <div className="marketplace__empty">
           <h2>No opportunities found</h2>
-          <p>Try changing your search or filters.</p>
 
-          <button type="button" onClick={resetFilters}>
+          <p>
+            Try changing your search or filters.
+          </p>
+
+          <button
+            type="button"
+            onClick={resetFilters}
+          >
             Reset filters
           </button>
         </div>
       ) : (
         <div className="marketplace__grid">
           {filteredAssets.map((asset) => (
-            <AssetCard key={asset.id} asset={asset} />
+            <AssetCard
+              key={asset.id}
+              asset={asset}
+            />
           ))}
         </div>
       )}

@@ -1,10 +1,14 @@
+
 import Link from "next/link";
 
 export function Header() {
   return (
     <header className="site-header">
-      <div className="site-header__inner">
-        <Link href="/" className="site-header__logo">
+      <div className="site-header__container">
+        <Link
+          href="/"
+          className="site-header__logo"
+        >
           N5Deal
         </Link>
 
@@ -17,12 +21,12 @@ export function Header() {
             Buyers
           </Link>
 
-          <Link href="/dashboard">
-            Dashboard
-          </Link>
-
           <Link href="/messages">
             Messages
+          </Link>
+
+          <Link href="/dashboard">
+            Dashboard
           </Link>
         </nav>
       </div>
