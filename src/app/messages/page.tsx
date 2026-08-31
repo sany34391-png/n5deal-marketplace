@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -8,19 +7,16 @@ import {
   messages as initialMessages,
   users,
 } from "@/data/mock-data";
-import type { Message } from "@/types/marketplace";
-
-const CURRENT_USER_ID = "user-1";
+import type {
+  Message,
+  User,
+} from "@/types/marketplace";
+import { getCurrentUser } from "@/lib/auth";
 
 export default function MessagesPage() {
   const searchParams = useSearchParams();
 
-  const selectedUserId =
-    searchParams.get("user") || "user-3";
-
-  const selectedUser = users.find(
-    (user) => user.id === selectedUserId
-  );
+  const currentUser = getCurrentUser();
 
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") {
@@ -32,7 +28,7 @@ export default function MessagesPage() {
         localStorage.getItem("n5deal-messages");
 
       return savedMessages
-        ? JSON.parse(savedMessages)
+        ? (JSON.parse(savedMessages) as Message[])
         : initialMessages;
     } catch {
       return initialMessages;
@@ -41,19 +37,33 @@ export default function MessagesPage() {
 
   const [message, setMessage] = useState("");
 
+  const selectedUserId =
+    searchParams.get("user") ||
+    users.find(
+      (user) =>
+        user.id !== currentUser.id &&
+        user.role !== "manager"
+    )?.id ||
+    "";
+
+  const selectedUser = users.find(
+    (user) => user.id === selectedUserId
+  );
+
   const conversations = users.filter(
     (user) =>
-      user.id !== CURRENT_USER_ID &&
+      user.id !== currentUser.id &&
       user.role !== "manager"
   );
 
-  const currentConversationMessages = messages.filter(
-    (item) =>
-      (item.senderId === CURRENT_USER_ID &&
-        item.receiverId === selectedUserId) ||
-      (item.senderId === selectedUserId &&
-        item.receiverId === CURRENT_USER_ID)
-  );
+  const currentConversationMessages =
+    messages.filter(
+      (item) =>
+        (item.senderId === currentUser.id &&
+          item.receiverId === selectedUserId) ||
+        (item.senderId === selectedUserId &&
+          item.receiverId === currentUser.id)
+    );
 
   const handleSend = () => {
     const text = message.trim();
@@ -64,7 +74,7 @@ export default function MessagesPage() {
 
     const newMessage: Message = {
       id: `message-${Date.now()}`,
-      senderId: CURRENT_USER_ID,
+      senderId: currentUser.id,
       receiverId: selectedUser.id,
       content: text,
       createdAt: new Date().toISOString(),
@@ -101,7 +111,7 @@ export default function MessagesPage() {
         <div className="messages-page__conversations">
           <h2>Conversations</h2>
 
-          {conversations.map((user) => (
+          {conversations.map((user: User) => (
             <Link
               key={user.id}
               href={`/messages?user=${user.id}`}
@@ -136,7 +146,7 @@ export default function MessagesPage() {
               <div
                 key={item.id}
                 className={`message ${
-                  item.senderId === CURRENT_USER_ID
+                  item.senderId === currentUser.id
                     ? "message--sent"
                     : "message--received"
                 }`}
@@ -146,7 +156,7 @@ export default function MessagesPage() {
                 <small>
                   {new Date(
                     item.createdAt
-                  ).toLocaleTimeString([], {
+                  ).toLocaleTimeString("en-US", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
@@ -177,7 +187,9 @@ export default function MessagesPage() {
             <button
               type="button"
               onClick={handleSend}
-              disabled={!message.trim()}
+              disabled={
+                !message.trim() || !selectedUser
+              }
             >
               Send
             </button>

@@ -4,14 +4,15 @@
 import { FormEvent, useState } from "react";
 import { assets as initialAssets } from "@/data/mock-data";
 import type { Asset } from "@/types/marketplace";
+import { getCurrentUser } from "@/lib/auth";
 import {
   assetSchema,
   type AssetFormData,
 } from "@/schemas/asset.schema";
 
-const SELLER_ID = "user-3";
-
 export default function DashboardContent() {
+  const currentUser = getCurrentUser();
+
   const [assets, setAssets] = useState<Asset[]>(() => {
     if (typeof window === "undefined") {
       return initialAssets;
@@ -22,7 +23,7 @@ export default function DashboardContent() {
         localStorage.getItem("n5deal-assets");
 
       return savedAssets
-        ? JSON.parse(savedAssets)
+        ? (JSON.parse(savedAssets) as Asset[])
         : initialAssets;
     } catch {
       return initialAssets;
@@ -42,7 +43,7 @@ export default function DashboardContent() {
   >({});
 
   const sellerAssets = assets.filter(
-    (asset) => asset.sellerId === SELLER_ID
+    (asset) => asset.sellerId === currentUser.id
   );
 
   const handleSubmit = (
@@ -85,7 +86,7 @@ export default function DashboardContent() {
 
     const newAsset: Asset = {
       id: `asset-${Date.now()}`,
-      sellerId: SELLER_ID,
+      sellerId: currentUser.id,
       title: result.data.title.trim(),
       description: result.data.description.trim(),
       industry: result.data.industry.trim(),

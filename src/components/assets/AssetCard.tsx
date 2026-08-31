@@ -21,7 +21,7 @@ export function AssetCard({ asset }: AssetCardProps) {
         <span>Asking price</span>
 
         <strong>
-          ${asset.price.toLocaleString()}
+          ${asset.price.toLocaleString("en-US")}
         </strong>
       </div>
 
