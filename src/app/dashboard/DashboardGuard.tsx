@@ -1,8 +1,13 @@
+
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser, isSeller } from "@/lib/auth";
+
+import {
+  getCurrentUser,
+  isSeller,
+} from "@/lib/auth";
 
 interface DashboardGuardProps {
   children: React.ReactNode;
@@ -13,14 +18,15 @@ export default function DashboardGuard({
 }: DashboardGuardProps) {
   const router = useRouter();
   const user = getCurrentUser();
+  const authorized = !!user && isSeller(user);
 
   useEffect(() => {
-    if (!isSeller(user)) {
+    if (!authorized) {
       router.replace("/marketplace");
     }
-  }, [router, user]);
+  }, [authorized, router]);
 
-  if (!isSeller(user)) {
+  if (!authorized) {
     return null;
   }
 

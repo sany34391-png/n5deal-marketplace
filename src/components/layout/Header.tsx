@@ -1,85 +1,76 @@
-
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { getCurrentUser, isSeller } from "@/lib/auth";
+import { useEffect, useState } from "react";
+
+import {
+  getCurrentUser,
+  type CurrentUser,
+} from "@/lib/auth";
 
 export function Header() {
-  const pathname = usePathname();
-  const currentUser = getCurrentUser();
+  const [user, setUser] =
+    useState<CurrentUser | null>(null);
 
-  const isActive = (path: string) =>
-    pathname === path;
+  useEffect(() => {
+    const updateUser = () => {
+      setUser(getCurrentUser());
+    };
+
+    updateUser();
+
+    window.addEventListener(
+      "storage",
+      updateUser
+    );
+
+    window.addEventListener(
+      "n5deal-auth-updated",
+      updateUser
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        updateUser
+      );
+
+      window.removeEventListener(
+        "n5deal-auth-updated",
+        updateUser
+      );
+    };
+  }, []);
 
   return (
     <header className="site-header">
       <div className="site-header__container">
         <Link
-          href="/marketplace"
+          href="/"
           className="site-header__logo"
         >
           N5Deal
         </Link>
 
         <nav className="site-header__nav">
-          <Link
-            href="/marketplace"
-            className={
-              isActive("/marketplace")
-                ? "active"
-                : ""
-            }
-          >
+          <Link href="/marketplace">
             Marketplace
           </Link>
 
-          <Link
-            href="/buyers"
-            className={
-              isActive("/buyers")
-                ? "active"
-                : ""
-            }
-          >
+          <Link href="/buyers">
             Buyers
           </Link>
 
-          {currentUser && (
-            <Link
-              href="/messages"
-              className={
-                isActive("/messages")
-                  ? "active"
-                  : ""
-              }
-            >
-              Messages
-            </Link>
-          )}
+          <Link href="/messages">
+            Messages
+          </Link>
 
-          {isSeller(currentUser) && (
-            <Link
-              href="/dashboard"
-              className={
-                isActive("/dashboard")
-                  ? "active"
-                  : ""
-              }
-            >
+          {user ? (
+            <Link href="/dashboard">
               Dashboard
             </Link>
-          )}
-
-          {!currentUser && (
-            <Link
-              href="/login"
-              className={
-                isActive("/login")
-                  ? "active"
-                  : ""
-              }
-            >
+          ) : (
+            <Link href="/login">
               Login
             </Link>
           )}

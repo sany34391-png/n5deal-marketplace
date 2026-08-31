@@ -3,18 +3,13 @@ import type { UserRole } from "@/types/marketplace";
 export interface CurrentUser {
   id: string;
   name: string;
+  email: string;
   role: UserRole;
 }
 
-export const defaultUser: CurrentUser = {
-  id: "user-1",
-  name: "Alexander Borodin",
-  role: "buyer",
-};
-
-export function getCurrentUser(): CurrentUser {
+export function getCurrentUser(): CurrentUser | null {
   if (typeof window === "undefined") {
-    return defaultUser;
+    return null;
   }
 
   try {
@@ -23,23 +18,29 @@ export function getCurrentUser(): CurrentUser {
     );
 
     if (!savedUser) {
-      return defaultUser;
+      return null;
     }
 
     return JSON.parse(savedUser) as CurrentUser;
   } catch {
-    return defaultUser;
+    return null;
   }
 }
 
-export function isBuyer(user: CurrentUser) {
-  return user.role === "buyer";
+export function isBuyer(
+  user: CurrentUser | null
+): boolean {
+  return user?.role === "buyer";
 }
 
-export function isSeller(user: CurrentUser) {
-  return user.role === "seller";
+export function isSeller(
+  user: CurrentUser | null
+): boolean {
+  return user?.role === "seller";
 }
 
-export function isManager(user: CurrentUser) {
-  return user.role === "manager";
+export function isManager(
+  user: CurrentUser | null
+): boolean {
+  return user?.role === "manager";
 }

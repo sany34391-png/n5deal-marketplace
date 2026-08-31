@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "N5Deal Marketplace",
-  description: "Business acquisition marketplace",
+  title: "N5Deal Marketplace Prototype",
+  description: "M&A marketplace prototype for buyers, sellers and platform managers",
 };
 
 export default function RootLayout({

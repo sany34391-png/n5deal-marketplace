@@ -3,6 +3,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { users } from "@/data/mock-data";
 import type { UserRole } from "@/types/marketplace";
 
@@ -12,23 +13,45 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     setError("");
 
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
+
+    if (!normalizedEmail) {
+      setError("Please enter your email.");
+      return;
+    }
+
     const user = users.find(
-      (item) => item.email.toLowerCase() === email.trim().toLowerCase()
+      (item) =>
+        item.email.toLowerCase() === normalizedEmail
     );
 
     if (!user) {
-      setError("User with this email was not found.");
+      setError(
+        "User with this email was not found."
+      );
+      return;
+    }
+
+    if (user.status === "suspended") {
+      setError(
+        "This account has been suspended."
+      );
       return;
     }
 
     const currentUser = {
       id: user.id,
       name: user.name,
+      email: user.email,
       role: user.role as UserRole,
     };
 
@@ -37,7 +60,22 @@ export default function LoginPage() {
       JSON.stringify(currentUser)
     );
 
+    if (user.role === "manager") {
+      router.push("/manager");
+      return;
+    }
+
+    if (user.role === "seller") {
+      router.push("/dashboard");
+      return;
+    }
+
     router.push("/marketplace");
+  };
+
+  const loginAs = (userEmail: string) => {
+    setEmail(userEmail);
+    setError("");
   };
 
   return (
@@ -61,7 +99,9 @@ export default function LoginPage() {
               id="email"
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
               placeholder="alex.borodin@example.com"
               autoComplete="email"
             />
@@ -84,7 +124,9 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() =>
-              setEmail("alex.borodin@example.com")
+              loginAs(
+                "alex.borodin@example.com"
+              )
             }
           >
             Login as Buyer
@@ -93,10 +135,38 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() =>
-              setEmail("daniel.carter@example.com")
+              loginAs(
+                "daniel.carter@example.com"
+              )
             }
           >
             Login as Seller
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              loginAs(
+                "manager@n5deal.com"
+              )
+            }
+          >
+            Login as Manager
+          </button>
+        </div>
+
+        <div className="login-page__register">
+          <span>
+            Do not have an account?
+          </span>
+
+          <button
+            type="button"
+            onClick={() =>
+              router.push("/register")
+            }
+          >
+            Create account
           </button>
         </div>
       </section>

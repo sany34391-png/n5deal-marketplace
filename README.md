@@ -1,36 +1,175 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# N5Deal Marketplace Prototype
 
-## Getting Started
+Невеликий демонстраційний прототип marketplace для M&A/фінансових активів, побудований у рамках технічного завдання N5Deal. Проєкт показує, як можна організувати Marketplace-платформу для трьох ролей: Buyer, Seller та Platform Manager.
 
-First, run the development server:
+## Мета проєкту
+
+Мета цього завдання — не будувати production-ready систему, а показати підхід до продуктового мислення, архітектури, UX та швидкої реалізації MVP в межах обмеженого часу.
+
+Проєкт реалізує основні сценарії:
+
+- Seller може публікувати активи, переглядати покупців, шукати їх, контактувати як з покупцем
+- Buyer може створити профіль, описати інвестиційні інтереси, переглядати список активів, фільтрувати їх і звертатися до продавця
+- Platform Manager може переглядати користувачів і активи, фільтрувати їх, керувати статусом користувачів і активів
+- Стан зберігається після оновлення сторінки через localStorage
+
+## Основні функції
+
+- Marketplace каталог активів
+- Детальні сторінки активів і покупців
+- Демо-авторизація за ролями
+- Dashboard для продавця
+- Manager panel для платформи
+- Повідомлення між користувачами
+- Фільтрація і пошук по суті даних
+- Адаптивний UI для різних розмірів екранів
+
+## Технічний стек
+
+- Next.js 16
+- React 19
+- TypeScript
+- ESLint
+- CSS / custom styling
+
+## Ключові технічні рішення
+
+### 1. MVP без backend, але з логікою persistence
+
+Для швидкої реалізації було обрано mock-дані і localStorage як механізм збереження стану. Це дозволяє:
+
+- зберігати авторизацію після оновлення сторінки
+- зберігати чати і дії користувача в браузері
+- демонструвати робочий продукт без налаштування бекенду
+
+### 2. Role-based UX
+
+Взаємодія залежить від ролі поточного користувача. Це дозволяє показати різні сценарії використання без складної авторизаційної системи.
+
+### 3. Product-first структура
+
+Платформа має логічні розділи для marketplace, buyers, dashboard, manager panel і messages. Це робить прототип зрозумілим і легко масштабується під реальну систему.
+
+### 4. Простий, але достатній data model
+
+Дані організовані в mock-структурах для:
+
+- користувачів
+- профілів покупців
+- активів
+- повідомлень
+
+Це достатньо для демонстрації основних user flows.
+
+## Допущення та припущення
+
+- Авторизація виконана як mock-процес без реального backend та JWT.
+- Дані є демонстраційними, а не реальними даними клієнта.
+- Всі ролі і права реалізовані на рівні UI/UX логіки, а не через backend policy.
+- Комунікація між користувачами істається в браузерному сховищі, тому вона демонстраційна.
+
+## AI tools / інструменти, що використовувались
+
+Для розробки використовувались сучасні AI-інструменти, зокрема GitHub Copilot, для:
+
+- структурування логіки компонентів
+- швидкої генерації UI-структур і регулярних патернів
+- перевірки коду, пошуку помилок і покращення чистоти реалізації
+- оптимізації стилів і логіки під короткі терміни виконання завдання
+
+Це дозволило зберігати швидкість розробки без втрати контролю над архітектурою та продуктом.
+
+## Які покращення зробив би при більше часу
+
+- реальний backend з базою даних і API
+- автентифікація через NextAuth / auth provider
+- CRUD для активів, покупців і користувачів
+- більш складні фільтри і AI-suggestions
+- тестування (unit/integration/e2e)
+- real-time повідомлення
+- міжнародна локалізація
+- deploy на Vercel або іншій платформі
+
+## Структура проєкту
+
+```bash
+n5deal-marketplace/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── assets/[id]/page.tsx
+│   │   ├── buyers/[id]/page.tsx
+│   │   ├── dashboard/
+│   │   ├── login/
+│   │   ├── marketplace/
+│   │   ├── messages/
+│   │   ├── register/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   ├── data/
+│   ├── lib/
+│   ├── schemas/
+│   └── types/
+├── package.json
+├── README.md
+├── next.config.ts
+├── tsconfig.json
+├── eslint.config.mjs
+└── .gitignore
+```
+
+## Як запустити
+
+1. Перейдіть у папку проєкту:
+
+```bash
+cd n5deal-marketplace
+```
+
+2. Встановіть залежності:
+
+```bash
+npm install
+```
+
+3. Запустіть dev-сервер:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Відкрийте в браузері:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production build
 
-## Learn More
+```bash
+npm run build
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Демо-акаунти
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+Buyer: alex.borodin@example.com
+Seller: daniel.carter@example.com
+Manager: manager@n5deal.com
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Корисні команди
 
-## Deploy on Vercel
+```bash
+npm run dev   # запуск проекту
+npm run build # production build
+npm run start # запуск собранного app
+npm run lint  # перевірка коду ESLint
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Висновок
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Цей прототип демонструє готовність до реалізації продуктового сценарію N5Deal в межах короткого технічного завдання. Основний акцент зроблений на понятійній архітектурі, ролях користувачів, UX і збереженні стану, без втрати швидкості розробки.

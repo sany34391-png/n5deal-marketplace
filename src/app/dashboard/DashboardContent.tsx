@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+
 import { assets as initialAssets } from "@/data/mock-data";
 import type { Asset } from "@/types/marketplace";
 import { getCurrentUser } from "@/lib/auth";
@@ -19,8 +20,7 @@ export default function DashboardContent() {
     }
 
     try {
-      const savedAssets =
-        localStorage.getItem("n5deal-assets");
+      const savedAssets = localStorage.getItem("n5deal-assets");
 
       return savedAssets
         ? (JSON.parse(savedAssets) as Asset[])
@@ -42,13 +42,15 @@ export default function DashboardContent() {
     Partial<Record<keyof AssetFormData, string>>
   >({});
 
+  if (!currentUser || currentUser.role !== "seller") {
+    return null;
+  }
+
   const sellerAssets = assets.filter(
     (asset) => asset.sellerId === currentUser.id
   );
 
-  const handleSubmit = (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = {
@@ -69,8 +71,7 @@ export default function DashboardContent() {
       > = {};
 
       result.error.issues.forEach((issue) => {
-        const field =
-          issue.path[0] as keyof AssetFormData;
+        const field = issue.path[0] as keyof AssetFormData;
 
         if (!fieldErrors[field]) {
           fieldErrors[field] = issue.message;
@@ -78,7 +79,6 @@ export default function DashboardContent() {
       });
 
       setErrors(fieldErrors);
-
       return;
     }
 
@@ -113,8 +113,6 @@ export default function DashboardContent() {
     setPrice("");
     setRevenue("");
     setEbitda("");
-
-    alert("Asset published successfully!");
   };
 
   return (
@@ -138,30 +136,22 @@ export default function DashboardContent() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-field">
-              <label htmlFor="title">
-                Asset title
-              </label>
+              <label htmlFor="title">Asset title</label>
 
               <input
                 id="title"
                 value={title}
-                onChange={(event) =>
-                  setTitle(event.target.value)
-                }
+                onChange={(event) => setTitle(event.target.value)}
                 placeholder="e.g. B2B SaaS Company"
               />
 
               {errors.title && (
-                <p className="form-error">
-                  {errors.title}
-                </p>
+                <p className="form-error">{errors.title}</p>
               )}
             </div>
 
             <div className="form-field">
-              <label htmlFor="description">
-                Description
-              </label>
+              <label htmlFor="description">Description</label>
 
               <textarea
                 id="description"
@@ -182,9 +172,7 @@ export default function DashboardContent() {
 
             <div className="dashboard-page__row">
               <div className="form-field">
-                <label htmlFor="industry">
-                  Industry
-                </label>
+                <label htmlFor="industry">Industry</label>
 
                 <input
                   id="industry"
@@ -203,9 +191,7 @@ export default function DashboardContent() {
               </div>
 
               <div className="form-field">
-                <label htmlFor="location">
-                  Location
-                </label>
+                <label htmlFor="location">Location</label>
 
                 <input
                   id="location"
@@ -226,9 +212,7 @@ export default function DashboardContent() {
 
             <div className="dashboard-page__row">
               <div className="form-field">
-                <label htmlFor="price">
-                  Asking price
-                </label>
+                <label htmlFor="price">Asking price</label>
 
                 <input
                   id="price"
@@ -242,16 +226,12 @@ export default function DashboardContent() {
                 />
 
                 {errors.price && (
-                  <p className="form-error">
-                    {errors.price}
-                  </p>
+                  <p className="form-error">{errors.price}</p>
                 )}
               </div>
 
               <div className="form-field">
-                <label htmlFor="revenue">
-                  Revenue
-                </label>
+                <label htmlFor="revenue">Revenue</label>
 
                 <input
                   id="revenue"
@@ -272,9 +252,7 @@ export default function DashboardContent() {
               </div>
 
               <div className="form-field">
-                <label htmlFor="ebitda">
-                  EBITDA
-                </label>
+                <label htmlFor="ebitda">EBITDA</label>
 
                 <input
                   id="ebitda"
@@ -288,9 +266,7 @@ export default function DashboardContent() {
                 />
 
                 {errors.ebitda && (
-                  <p className="form-error">
-                    {errors.ebitda}
-                  </p>
+                  <p className="form-error">{errors.ebitda}</p>
                 )}
               </div>
             </div>
