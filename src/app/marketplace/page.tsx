@@ -1,34 +1,21 @@
-import { assets } from "@/data/mock-data";
-import { AssetCard } from "@/components/assets/AssetCard";
+import { Marketplace } from "@/components/assets/Marketplace";
 
 export default function MarketplacePage() {
   return (
-    <main>
-      <section>
-        <span>MARKETPLACE</span>
+    <main className="marketplace-page">
+      <section className="marketplace-page__hero">
+        <span className="marketplace-page__eyebrow">
+          N5DEAL MARKETPLACE
+        </span>
 
         <h1>Investment opportunities</h1>
 
         <p>
-          Discover businesses and assets available for acquisition.
+          Discover businesses and financial assets available for acquisition.
         </p>
       </section>
 
-      <section>
-        <div>
-          <strong>{assets.length}</strong>
-          <span> opportunities</span>
-        </div>
-
-        <div>
-          {assets.map((asset) => (
-            <AssetCard
-              key={asset.id}
-              asset={asset}
-            />
-          ))}
-        </div>
-      </section>
+      <Marketplace />
     </main>
   );
 }
