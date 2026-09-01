@@ -185,13 +185,25 @@ npm run start
 
 ## Docker deployment
 
-### 1. Зібрати образ
+### Найпростіше: Готовий образ з Docker Hub ✅
+
+```bash
+docker run -p 3000:3000 tartar112/n5deal-marketplace:latest
+```
+
+**Це все!** Образ автоматично скачується і запускається.
+
+**Посилання**: https://hub.docker.com/r/tartar112/n5deal-marketplace
+
+### Альтернативно: Локальна збірка
+
+#### 1. Зібрати образ
 
 ```bash
 docker build -t n5deal-marketplace .
 ```
 
-### 2. Запустити контейнер
+#### 2. Запустити контейнер
 
 ```bash
 docker run --rm -p 3000:3000 n5deal-marketplace
@@ -203,7 +215,7 @@ docker run --rm -p 3000:3000 n5deal-marketplace
 http://localhost:3000
 ```
 
-### 3. Запуск через Docker Compose
+#### 3. Запуск через Docker Compose
 
 ```bash
 docker compose up --build
@@ -215,16 +227,16 @@ docker compose up --build
 docker compose down
 ```
 
-### 4. Docker Compose файл
+### Docker конфігурація
 
-Проєкт містить `docker-compose.yml`, який:
+Проєкт містить `docker-compose.yml` та `Dockerfile`, які:
 
-- збирає образ з Dockerfile
-- запускає контейнер на порту 3000
-- використовує `restart: unless-stopped`
-- працює в production-режимі
+- збирають образ з Dockerfile
+- запускають контейнер на порту 3000
+- використовують `restart: unless-stopped`
+- працюють в production-режимі
 
-### 5. Чому Docker-версія працює стабільно
+### Чому Docker-версія працює стабільно
 
 - Next.js збирається в standalone mode
 - в контейнері запускається лише продакшн-сервер
@@ -261,37 +273,23 @@ npm install
 npm run dev
 ```
 
-### Варіант 2: Через Docker Hub (production)
+### Варіант 2: Через Docker Hub (готовий образ, найпростіше) ✅
 
-Якщо хочеш, щоб інші могли просто витягнути готовий образ без збірки:
+**Образ вже опублікований** на Docker Hub!
 
-1. Створіть акаунт на [Docker Hub](https://hub.docker.com/)
-
-2. Залогуйтеся локально:
+Люди можуть запустити його однією командою:
 
 ```bash
-docker login
+docker run -p 3000:3000 tartar112/n5deal-marketplace:latest
 ```
 
-3. Побудуйте образ з вашою назвою:
+Образ автоматично скачується та запускається. **Не потребує збірки локально.**
 
-```bash
-docker build -t <your-docker-username>/n5deal-marketplace .
-```
+**Посилання на Docker Hub**: https://hub.docker.com/r/tartar112/n5deal-marketplace
 
-4. Опублікуйте на Docker Hub:
+**Коли використовувати**: для швидкого тестування без компіляції, найпростіший спосіб для інших
 
-```bash
-docker push <your-docker-username>/n5deal-marketplace
-```
-
-5. Тепер інші можуть запустити його однією командою:
-
-```bash
-docker run -p 3000:3000 <your-docker-username>/n5deal-marketplace
-```
-
-### Варіант 3: Vercel Deployment (найпростіше)
+### Варіант 3: Vercel Deployment (найпростіше для web-посилання)
 
 Next.js найкраще на [Vercel](https://vercel.com/):
 
