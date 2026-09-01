@@ -2,6 +2,36 @@
 
 Невеликий демонстраційний прототип marketplace для M&A/фінансових активів, побудований у рамках технічного завдання N5Deal. Проєкт показує, як можна організувати Marketplace-платформу для трьох ролей: Buyer, Seller та Platform Manager.
 
+---
+
+## 🚀 Швидкий старт для інших
+
+### Клонуйте проєкт:
+
+```bash
+git clone <repository-url>
+cd n5deal-marketplace
+```
+
+### Локальний запуск:
+
+```bash
+npm install
+npm run dev
+```
+
+Далі відкрийте http://localhost:3000
+
+### Або запустіть через Docker (найпростіше):
+
+```bash
+docker compose up --build
+```
+
+Доступно на: http://localhost:3000
+
+---
+
 ## Мета проєкту
 
 Мета цього завдання — не будувати production-ready систему, а показати підхід до продуктового мислення, архітектури, UX та швидкої реалізації MVP в межах обмеженого часу.
@@ -153,6 +183,54 @@ npm run build
 npm run start
 ```
 
+## Docker deployment
+
+### 1. Зібрати образ
+
+```bash
+docker build -t n5deal-marketplace .
+```
+
+### 2. Запустити контейнер
+
+```bash
+docker run --rm -p 3000:3000 n5deal-marketplace
+```
+
+Після цього застосунок доступний на:
+
+```text
+http://localhost:3000
+```
+
+### 3. Запуск через Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Для зупинки:
+
+```bash
+docker compose down
+```
+
+### 4. Docker Compose файл
+
+Проєкт містить `docker-compose.yml`, який:
+
+- збирає образ з Dockerfile
+- запускає контейнер на порту 3000
+- використовує `restart: unless-stopped`
+- працює в production-режимі
+
+### 5. Чому Docker-версія працює стабільно
+
+- Next.js збирається в standalone mode
+- в контейнері запускається лише продакшн-сервер
+- відокремлено залежності від розробки
+- контейнер не потребує локальної установки Node.js на хості
+
 ## Демо-акаунти
 
 ```text
@@ -169,6 +247,65 @@ npm run build # production build
 npm run start # запуск собранного app
 npm run lint  # перевірка коду ESLint
 ```
+
+## 📤 Поділитися проектом з іншими
+
+### Варіант 1: Через Git
+
+Оповідіть іншим про сховище, і вони зможуть клонувати його:
+
+```bash
+git clone <repository-url>
+cd n5deal-marketplace
+npm install
+npm run dev
+```
+
+### Варіант 2: Через Docker Hub (production)
+
+Якщо хочеш, щоб інші могли просто витягнути готовий образ без збірки:
+
+1. Створіть акаунт на [Docker Hub](https://hub.docker.com/)
+
+2. Залогуйтеся локально:
+
+```bash
+docker login
+```
+
+3. Побудуйте образ з вашою назвою:
+
+```bash
+docker build -t <your-docker-username>/n5deal-marketplace .
+```
+
+4. Опублікуйте на Docker Hub:
+
+```bash
+docker push <your-docker-username>/n5deal-marketplace
+```
+
+5. Тепер інші можуть запустити його однією командою:
+
+```bash
+docker run -p 3000:3000 <your-docker-username>/n5deal-marketplace
+```
+
+### Варіант 3: Vercel Deployment (найпростіше)
+
+Next.js найкраще на [Vercel](https://vercel.com/):
+
+1. Завантажте сховище на GitHub
+2. Підключіть його до Vercel
+3. Натисніть Deploy
+4. Отримайте публічне посилання
+
+### Варіант 4: За допомогою GitHub
+
+Просто поділіться URL сховища на GitHub, і люди зможуть:
+- переглядати код
+- клонувати проект
+- запускати локально або деплоїти на Vercel
 
 ## Висновок
 
